@@ -8,7 +8,6 @@ from pyowm.commons.exceptions import (
     APIRequestError,
     APIResponseError
 )
-import ast
 import os
 
 
@@ -23,7 +22,6 @@ import os
              the location.
 """
 
-SECRET_KEY = os.urandom(32)
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY') or os.urandom(32)
 csrf = CSRFProtect(app)
