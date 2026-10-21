@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     body {
       padding: 20px;
     }
+
     .weather-card {
       max-width: 400px;
       margin: 0 auto;
@@ -18,23 +20,27 @@
     }
   </style>
 </head>
+
 <body>
-    <div class="container">
-      <div class="weather-card">
-        <form action="/search" method="post">
-          <div class="form-group">
-            <label for="location-input">Location:</label>
-            <input autocomplete="off" autofocus name="response" type="text" class="form-control" id="location-input" placeholder="Ex: New York,NY,US or Zip Code">
-            <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" /> 
-          </div>
-          <button type="submit" class="btn btn-primary">Search</button>
-        </form>
-        <div id="weather-info" class="mt-4"></div>
-        <h2>Weather Basics</h2>
-        <p> Start by entering a City or Zip in search field.
-          You can search for a city using "City Name, Country Code" query like "London, GB".
-          For US state, queries must be formated like "New York, NY, US" due to nature of the Openweather API.
-          Please note that all queries must have qoutations.
-        </p>
-      </div>
+  <div class="container">
+    <div class="weather-card">
+      <form action="/search" method="post">
+        <div class="form-group">
+          <label for="location-input">Location:</label>
+          <input autocomplete="off" autofocus name="response" type="text" class="form-control" id="location-input"
+            placeholder="Ex: New York,NY,US or Zip Code">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+      </form>
+      <div id="weather-info" class="mt-4"></div>
+      <h2>Weather Basics</h2>
+      <p>
+        Start by entering a city name or ZIP code in the search field.
+        You can search using a city and country code, such as London,GB,
+        or a city, state, and country code, such as New York,NY,US.
+        For US locations, you can also enter a five-digit ZIP code.
+        Quotation marks are not required.
+      </p>
     </div>
+  </div>
