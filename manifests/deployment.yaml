@@ -16,8 +16,8 @@ spec:
         app: weatherapp
     spec:
       containers:
-        - image: >- 
-            432367782265.dkr.ecr.us-east-2.amazonaws.com/flask-weatherapp
+        - image: >-
+            [aws-account].dkr.ecr.us-east-2.amazonaws.com/flask-weatherapp
           name: weatherapp
           ports:
             - containerPort: 5000
@@ -29,10 +29,10 @@ spec:
               cpu: "0.2"
               memory: 256Mi
           env:
-          - name: API
-            valueFrom:
-              secretKeyRef:
-                name: apikey
-                key: api
+            - name: API
+              valueFrom:
+                secretKeyRef:
+                  name: apikey
+                  key: api
       imagePullSecrets:
         - name: regcred

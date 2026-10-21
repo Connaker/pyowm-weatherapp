@@ -1,6 +1,6 @@
 # Flask Weather App
 
-version: 1.0.0
+version: 1.1.0
 
 ## About this Project
 
@@ -47,32 +47,19 @@ Locally: <br>
 
 > the following are the steps to run the program locally on your machine using Docker.
 
-1. start your virtual environment
-
-   ```sh
-   macOS: source .\venv\Scripts\activate <br>
-   Windows: .\venv\Scripts\activate
-   ```
-
-2. Install requirements.txt
-
-   ```sh
-   pip install -r requirements.txt
-   ```
-
-3. Docker build
+1. Docker build
 
    ```sh
    docker build -t <image_name> .
    ```  
 
-4. Run docker image
+2. Run docker image
 
    ```sh
    docker run -d --name <app_name> -e API='API KEY' -p 5000:5000 <image_name>
    ```  
 
-5. Open a browser and navigate to the IP address of the Docker container with port 5000.
+. Open a browser and navigate to localhost:5000.
 
 ## Running on AWS
 
