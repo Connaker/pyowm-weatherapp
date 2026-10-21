@@ -2,6 +2,12 @@ from pyowm import OWM
 from flask import Flask, render_template, request
 from flask_wtf.csrf import CSRFProtect
 from pyzipcode import ZipCodeDatabase
+from pyowm.commons.exceptions import (
+    NotFoundError,
+    UnauthorizedError,
+    APIRequestError,
+    APIResponseError
+)
 import ast
 import os
 
@@ -19,13 +25,17 @@ import os
 
 SECRET_KEY = os.urandom(32)
 app = Flask(__name__)
-app.config['SECRET_KEY'] = SECRET_KEY
+app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY') or os.urandom(32)
 csrf = CSRFProtect(app)
 owm = OWM(os.environ['API'])
 
 @app.errorhandler(500)
 def internal_server_error(e):
-    return render_template('500.html')
+    return render_template('500.html'), 500
+
+@app.route('/health')
+def health():
+    return {'status': 'healthy'}, 200
 
 @app.route('/')
 def index():
@@ -43,11 +53,11 @@ def search():
         Renders data to city.html
     """
 
-    search = request.form['response']
+    search = request.form.get('response', '').strip()
     if search == '':
         e = 'Field cannot be blank'
         return render_template('invalid.html', error=e)
-    n = ast.literal_eval(search)
+    n = search.strip()
     if isinstance(n,int):
         if len(str(n)) == 5:
             zcdb = ZipCodeDatabase()
@@ -59,17 +69,33 @@ def search():
             return render_template('invalid.html', error=e)
     else:
             location = n
+    try:
+        mgr = owm.weather_manager()
+        observation = mgr.weather_at_place(location)
+        w = observation.weather
+        ftemp = w.temperature(unit='fahrenheit')['temp']
+        ctemp = w.temperature(unit='celsius')['temp']
+        descript = w.detailed_status
 
-    mgr = owm.weather_manager()
-    observation = mgr.weather_at_place(location)
-    w = observation.weather
-    ftemp = w.temperature(unit='fahrenheit')['temp']
-    ctemp = w.temperature(unit='celsius')['temp']
-    descript = w.detailed_status
+    except NotFoundError:
+        app.logger.warning("Weather location not found: %s", location)
+        return render_template('invalid.html', error='Weather location not found'), 404
+    except UnauthorizedError:
+        app.logger.error("OpenWeatherMap API authorization failed")
+        return render_template('500.html'), 502
+
+    except APIRequestError:
+        app.logger.exception("OpenWeatherMap connection failed")
+        return render_template('500.html'), 503
+
+    except APIResponseError:
+        app.logger.exception("OpenWeatherMap returned an API error")
+        return render_template('500.html'), 502
+
     weather = {
-            'location': location,
-            'current': descript,
-            'ftemp': ftemp,
-            'ctemp': ctemp,
+        'location': location,
+        'current': descript,
+        'ftemp': ftemp,
+        'ctemp': ctemp,
     }
     return render_template("city.html", weather=weather)
