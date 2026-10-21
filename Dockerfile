@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends gcc \
     && rm -rf /var/lib/apt/lists/*
 
 COPY ./weatherapp/requirements.txt .
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements.txt
+RUN pip wheel --no-cache-dir --wheel-dir /app/wheels -r requirements.txt
 
 FROM python:3.13.16-slim-bookworm
 
@@ -18,7 +18,8 @@ RUN useradd -ms /bin/bash worker && \
 COPY --from=builder /app/wheels /wheels
 COPY --from=builder /app/requirements.txt .
 
-RUN pip install --no-cache /wheels/*
+RUN pip install --no-cache-dir --no-index \
+    --find-links=/wheels -r requirements.txt
 
 USER worker
 ENV PATH="/home/worker/.local/bin:${PATH}"
