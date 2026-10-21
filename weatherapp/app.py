@@ -54,21 +54,18 @@ def search():
     """
 
     search = request.form.get('response', '').strip()
-    if search == '':
-        e = 'Field cannot be blank'
-        return render_template('invalid.html', error=e)
-    n = search.strip()
-    if isinstance(n,int):
-        if len(str(n)) == 5:
-            zcdb = ZipCodeDatabase()
-            city = zcdb[n].city
-            state = zcdb[n].state
-            location = city+','+state+','+"US"
-        else:
-            e = 'Field is invalid Zip'
-            return render_template('invalid.html', error=e)
+    if not search:
+        return render_template('invalid.html', error='No location provided'), 400
+    
+    if search.isascii() and search.isdigit() and len(search) == 5:
+        zcdb = ZipCodeDatabase()
+        try:
+            zipcode = zcdb[search]
+            location = f"{zipcode.city}, {zipcode.state}, US"
+        except (KeyError, IndexError):
+            return render_template('invalid.html', error='Invalid Zipcode'), 400
     else:
-            location = n
+        location = search
     try:
         mgr = owm.weather_manager()
         observation = mgr.weather_at_place(location)
