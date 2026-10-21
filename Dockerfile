@@ -33,4 +33,4 @@ ARG GUNICORN_WORKERS=2
 ENV WORKERS=${GUNICORN_WORKERS}
 
 EXPOSE 5000
-CMD ["sh", "-c", "exec gunicorn wsgi:app --bind 0.0.0.0:5000 --workers ${WORKERS:-2}"]
+CMD ["sh", "-c", "export FLASK_SECRET_KEY=\"${FLASK_SECRET_KEY:-$(python -c 'import secrets; print(secrets.token_hex(32))')}\"; exec gunicorn wsgi:app --bind 0.0.0.0:5000 --workers ${WORKERS:-2}"]
