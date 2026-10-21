@@ -12,8 +12,6 @@ version: 1.0.0
 
 <br>
 
-website: https://weatherapp.connaker.org/
-
 ## Built with
 ![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff)
 ![HTML](https://img.shields.io/badge/HTML-%23E34F26.svg?logo=html5&logoColor=white)
@@ -27,7 +25,7 @@ website: https://weatherapp.connaker.org/
 
 ## Getting Started
 
-> The following are the prequisites to run this program. It is assumed that these are configured prior to running the program.
+> The following are the perquisites to run this program. It is assumed that these are configured prior to running the program.
 
 Locally: <br>
 
@@ -42,7 +40,7 @@ Locally: <br>
 1. Clone the repo
 
    ```sh
-   git clone https://github.com/Connaker/pyowm-weatherappck.git
+   git clone https://github.com/Connaker/pyowm-weatherapp.git
    ```
 
 ## Running Locally
